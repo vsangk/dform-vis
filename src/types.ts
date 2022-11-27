@@ -55,7 +55,7 @@ type AddressConditional =
   | CountryConditionalTypeIn
   | CountryConditionalTypeNotIn;
 
-type BaseField = {
+export type BaseField = {
   id: string;
   conditional_expression_id: string;
   title: string;
@@ -64,7 +64,7 @@ type BaseField = {
   required: boolean;
 };
 
-type HeaderField = BaseField & {
+export type HeaderField = BaseField & {
   field_type: 'FIELD_TYPE_HEADER';
   field_type_header: {
     type: 'TYPE_HEADER1' | 'TYPE_HEADER2' | 'TYPE_HEADER3';
@@ -72,7 +72,7 @@ type HeaderField = BaseField & {
   validations: [];
 };
 
-type StringField = BaseField & {
+export type StringField = BaseField & {
   field_type: 'FIELD_TYPE_STRING';
   field_type_string: {
     text_area: boolean;
@@ -81,7 +81,7 @@ type StringField = BaseField & {
   validations: StringValidation[];
 };
 
-type SingleSelectField = BaseField & {
+export type SingleSelectField = BaseField & {
   field_type: 'FIELD_TYPE_SINGLESELECT';
   field_type_single_select: {
     default: string;
@@ -92,7 +92,7 @@ type SingleSelectField = BaseField & {
   validations: [];
 };
 
-type MultiSelectField = BaseField & {
+export type MultiSelectField = BaseField & {
   field_type: 'FIELD_TYPE_MULTISELECT';
   field_type_multi_select: {
     type: 'SELECT_UNSPECIFIED';
@@ -102,7 +102,7 @@ type MultiSelectField = BaseField & {
   validations: [];
 };
 
-type AddressField = BaseField & {
+export type AddressField = BaseField & {
   field_type: 'FIELD_TYPE_ADDRESS';
   field_type_address: {
     conditionals: AddressConditional[];
@@ -110,7 +110,7 @@ type AddressField = BaseField & {
   validations: [];
 };
 
-type DateField = BaseField & {
+export type DateField = BaseField & {
   field_type: 'FIELD_TYPE_DATE';
   field_type_date: {
     min_age: number;
