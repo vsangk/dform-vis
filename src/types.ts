@@ -50,8 +50,8 @@ type CountryConditionalTypeNotIn = {
   };
 };
 
-type SelectConditional = ConditionalTypeIn | ConditionalTypeNotIn;
-type AddressConditional =
+export type SelectConditional = ConditionalTypeIn | ConditionalTypeNotIn;
+export type AddressConditional =
   | CountryConditionalTypeIn
   | CountryConditionalTypeNotIn;
 

@@ -6,8 +6,13 @@ import {
   HeaderField,
   MultiSelectField,
   Question,
+  Requirement,
   SingleSelectField,
   StringField,
+  ConditionalExpression,
+  QuestionConfig,
+  SelectConditional,
+  AddressConditional,
 } from '../types';
 
 function createBaseFields(id: string): BaseField {
@@ -44,7 +49,10 @@ export function createStringField(id: string): StringField {
   };
 }
 
-export function createSingleSelectField(id: string): SingleSelectField {
+export function createSingleSelectField(
+  id: string,
+  selectConditionals: SelectConditional[]
+): SingleSelectField {
   return {
     ...createBaseFields(id),
     field_type: 'FIELD_TYPE_SINGLESELECT',
@@ -68,7 +76,7 @@ export function createSingleSelectField(id: string): SingleSelectField {
           value: 'Option 3',
         },
       ],
-      conditionals: [], // TODO: Figure out API to create these
+      conditionals: selectConditionals,
     },
     validations: [],
   };
@@ -103,12 +111,15 @@ export function createMultiSelectField(id: string): MultiSelectField {
   };
 }
 
-export function createAddressField(id: string): AddressField {
+export function createAddressField(
+  id: string,
+  addressConditionals: AddressConditional[]
+): AddressField {
   return {
     ...createBaseFields(id),
     field_type: 'FIELD_TYPE_ADDRESS',
     field_type_address: {
-      conditionals: [], // TODO: Figure out API to create these
+      conditionals: addressConditionals,
     },
     validations: [],
   };
@@ -138,5 +149,89 @@ export function createQuestion(
     multi_answer: multiAnswer,
     optional: false,
     fields,
+  };
+}
+
+export function createRequirement(
+  id: string,
+  questions: Question[],
+  conditionalExpressions: ConditionalExpression[]
+): Requirement {
+  return {
+    requirement_id: id,
+    title: 'title',
+    description: 'description',
+    support_content: [],
+    questions,
+    conditional_expressions: conditionalExpressions,
+  };
+}
+
+export function createQuestionConfigForQuestion(
+  questionId: string
+): QuestionConfig {
+  return {
+    question_id: questionId,
+    field_id: '',
+    default_options: [],
+    label_options_list: [],
+    option_values: [],
+  };
+}
+
+export function createQuestionConfigForField(
+  questionId: string,
+  fieldId: string
+): QuestionConfig {
+  return {
+    question_id: questionId,
+    field_id: fieldId,
+    default_options: [],
+    label_options_list: [],
+    option_values: [],
+  };
+}
+
+export function createConditionalExpressionField(
+  id: string,
+  conditionalId: string,
+  questionConfigs: QuestionConfig[]
+): ConditionalExpression {
+  return {
+    id,
+    operation: 'OPERATION_FIELD',
+    operands: [
+      {
+        conditional_id: conditionalId,
+        operation: 'OPERATION_UNSPECIFIED',
+        operands: [],
+      },
+    ],
+    question_configs: questionConfigs,
+  };
+}
+
+export function createConditionalExpressionAnd(
+  id: string,
+  conditionalId1: string,
+  conditionalId2: string,
+  questionConfigs: QuestionConfig[]
+): ConditionalExpression {
+  return {
+    id,
+    operation: 'OPERATION_AND',
+    operands: [
+      {
+        conditional_id: conditionalId1,
+        operation: 'OPERATION_UNSPECIFIED',
+        operands: [],
+      },
+      {
+        conditional_id: conditionalId2,
+        operation: 'OPERATION_UNSPECIFIED',
+        operands: [],
+      },
+    ],
+    question_configs: questionConfigs,
   };
 }
