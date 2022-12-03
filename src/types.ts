@@ -118,7 +118,7 @@ export type DateField = BaseField & {
   validations: DateValidation[];
 };
 
-type Field =
+export type Field =
   | HeaderField
   | StringField
   | SingleSelectField
@@ -126,7 +126,7 @@ type Field =
   | AddressField
   | DateField;
 
-type Question = {
+export type Question = {
   id: string;
   conditional_expression_id: string;
   title: string;
@@ -136,7 +136,7 @@ type Question = {
   fields: Field[];
 };
 
-type Operation =
+export type Operation =
   | 'OPERATION_FIELD'
   | 'OPERATION_OR'
   | 'OPERATION_AND'
@@ -146,13 +146,13 @@ type BooleanOperand = {
   operation: 'OPERATION_UNSPECIFIED';
   operands: Operand[];
 };
-type NormalOperand = {
+export type NormalOperand = {
   conditional_id: string;
   operation: Operation;
   operands: Operand[];
 };
-type Operand = BooleanOperand | NormalOperand;
-type QuestionConfig = {
+export type Operand = BooleanOperand | NormalOperand;
+export type QuestionConfig = {
   question_id: string;
   field_id: string;
   option_values: string[];
@@ -160,14 +160,14 @@ type QuestionConfig = {
   label_options_list: string[];
 };
 
-type ConditionalExpression = {
+export type ConditionalExpression = {
   id: string;
   operation: Operation;
   operands: Operand[];
   question_configs: QuestionConfig[];
 };
 
-type Requirement = {
+export type Requirement = {
   requirement_id: string;
   title: string;
   description: string;
