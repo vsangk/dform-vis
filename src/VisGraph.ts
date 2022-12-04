@@ -9,7 +9,8 @@ type VisEdge = {
   to: string;
 };
 
-const DEFAULT_COLOR = '#e04141';
+const LIGHT_GREEN = '#7ad6bc';
+const LIGHT_BLUE = '#648fc4';
 
 export class VisGraph {
   nodes: VisNode[];
@@ -21,18 +22,18 @@ export class VisGraph {
   }
 
   addQuestionNode(questionId: string) {
-    this.addNode(questionId, questionId);
+    this.addNode(questionId, questionId, LIGHT_BLUE);
   }
 
   addFieldNode(questionId: string, fieldId: string) {
-    this.addNode(questionId + fieldId, fieldId);
+    this.addNode(questionId + fieldId, fieldId, LIGHT_GREEN);
   }
 
-  addNode(id: string, label: string) {
+  addNode(id: string, label: string, color: string) {
     this.nodes.push({
       id,
       label,
-      color: DEFAULT_COLOR,
+      color,
     });
   }
 
