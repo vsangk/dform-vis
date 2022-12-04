@@ -26,7 +26,7 @@ describe('createDepGraph', () => {
       ]),
     ];
     const requirement = createRequirement('req', questions, []);
-    const graph = createDepGraph(requirement);
+    const { graph } = createDepGraph(requirement);
 
     it('returns the correct dependencies of q1', () => {
       expect(graph.dependenciesOf('q1')).toEqual([]);
@@ -89,7 +89,7 @@ describe('createDepGraph', () => {
       questions,
       conditionalExpressions
     );
-    const graph = createDepGraph(requirement);
+    const { graph } = createDepGraph(requirement);
 
     it('returns the correct dependencies of q1', () => {
       expect(graph.dependenciesOf('q1')).toEqual([]);
