@@ -96,16 +96,22 @@ export function createDepGraph(requirement: Requirement) {
 
         if (isFieldLevelConditional) {
           graph.addDependency(questionConfig.field_id, dependentFieldId);
-          visGraph.addEdge({
-            to: questionConfig.question_id + questionConfig.field_id,
-            from: dependentQuestionId + dependentFieldId,
-          });
+          visGraph.addEdge(
+            {
+              to: questionConfig.question_id + questionConfig.field_id,
+              from: dependentQuestionId + dependentFieldId,
+            },
+            true
+          );
         } else {
           graph.addDependency(questionConfig.question_id, dependentFieldId);
-          visGraph.addEdge({
-            to: questionConfig.question_id,
-            from: dependentQuestionId + dependentFieldId,
-          });
+          visGraph.addEdge(
+            {
+              to: questionConfig.question_id,
+              from: dependentQuestionId + dependentFieldId,
+            },
+            true
+          );
         }
       }
     }

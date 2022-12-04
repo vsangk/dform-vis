@@ -7,10 +7,13 @@ type VisNode = {
 type VisEdge = {
   from: string;
   to: string;
+  color?: string;
 };
 
 const LIGHT_GREEN = '#7ad6bc';
 const LIGHT_BLUE = '#648fc4';
+const ORANGE = '#db8412';
+const BLACK = '#000000';
 
 export class VisGraph {
   nodes: VisNode[];
@@ -37,7 +40,10 @@ export class VisGraph {
     });
   }
 
-  addEdge(visEdge: VisEdge) {
-    this.edges.push(visEdge);
+  addEdge(visEdge: VisEdge, isConditional = false) {
+    this.edges.push({
+      ...visEdge,
+      color: isConditional ? ORANGE : BLACK,
+    });
   }
 }
