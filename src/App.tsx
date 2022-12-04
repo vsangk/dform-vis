@@ -1,4 +1,3 @@
-import './App.css';
 import GraphVis from './GraphVis/GraphVis';
 
 function App() {

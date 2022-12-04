@@ -21,6 +21,9 @@ const options = {
   edges: {
     color: '#000000',
   },
+  physics: {
+    enabled: false,
+  },
 };
 
 const questions = [
@@ -58,6 +61,7 @@ const conditionalExpressions = [
 ];
 
 const requirement = createRequirement('req', questions, conditionalExpressions);
+
 const { visGraph } = createDepGraph(requirement);
 
 function GraphVis() {
