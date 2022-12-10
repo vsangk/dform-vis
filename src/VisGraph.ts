@@ -17,6 +17,9 @@ const LIGHT_BLUE = '#648fc4';
 const ORANGE = '#db8412';
 const BLACK = '#000000';
 
+const LARGE_BORDER = 5;
+const DEFAULT_BORDER = 1;
+
 export class VisGraph {
   nodes: VisNode[];
   edges: VisEdge[];
@@ -30,7 +33,7 @@ export class VisGraph {
         hierarchical: false,
       },
       edges: {
-        color: '#000000',
+        color: BLACK,
       },
       physics: {
         enabled: false,
@@ -61,32 +64,33 @@ export class VisGraph {
     });
   }
 
+  // ! Not a fan of this because side effect isn't obvious when determining React re-rendering
   highlightSelected(nodeId: string): boolean {
     // iterate over each node and replace the matchign one with a bigger size and diff color
     let found = false;
-    const nodesWithHighlight = this.nodes.map((n) => {
+    this.nodes = this.nodes.map((n) => {
       if (n.id === nodeId) {
         found = true;
         return {
           ...n,
-          borderWidth: 3,
-          size: 50,
+          borderWidth: LARGE_BORDER,
         };
       }
 
       return n;
     });
-    this.nodes = nodesWithHighlight;
 
     return found;
   }
 
+  // ! Not a fan of this because side effect isn't obvious when determining React re-rendering
   unhighlightSelected() {
     // iterate over each node and replace the matchign one with a bigger size and diff color
     this.nodes = this.nodes.map((n) => ({
       id: n.id,
       color: n.color,
       label: n.label,
+      borderWidth: DEFAULT_BORDER,
     }));
   }
 }

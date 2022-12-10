@@ -4,13 +4,28 @@ import { requirement } from './mocks/mockWithCondQuestion';
 import { createDepGraph } from './GraphVis/GraphVis.utils';
 
 function App() {
-  const {
-    visGraph: { nodes, edges, options },
-  } = useMemo(() => createDepGraph(requirement), []);
+  const [search, setSearch] = useState('');
+  const { visGraph } = useMemo(() => createDepGraph(requirement), []);
 
   return (
     <div>
-      <GraphVis nodes={nodes} edges={edges} options={options} />
+      <label id="search-label">Search ID</label>
+      <input
+        aria-labelledby="search-label"
+        value={search}
+        onChange={(e) => {
+          setSearch(e.target.value);
+          const found = visGraph.highlightSelected(e.target.value);
+          if (!found) {
+            visGraph.unhighlightSelected();
+          }
+        }}
+      />
+      <GraphVis
+        nodes={visGraph.nodes}
+        edges={visGraph.edges}
+        options={visGraph.options}
+      />
     </div>
   );
 }
