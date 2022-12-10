@@ -2,7 +2,7 @@ type VisNode = {
   id: string;
   label: string;
   color: string;
-  size?: number;
+  level: number;
   borderWidth?: number;
 };
 
@@ -30,7 +30,7 @@ export class VisGraph {
     this.edges = [];
     this.options = {
       layout: {
-        hierarchical: false,
+        hierarchical: true,
       },
       edges: {
         color: BLACK,
@@ -41,19 +41,20 @@ export class VisGraph {
     };
   }
 
-  addQuestionNode(questionId: string) {
-    this.addNode(questionId, questionId, LIGHT_BLUE);
+  addQuestionNode(questionId: string, level: number) {
+    this.addNode(questionId, questionId, LIGHT_BLUE, level);
   }
 
-  addFieldNode(questionId: string, fieldId: string) {
-    this.addNode(questionId + fieldId, fieldId, LIGHT_GREEN);
+  addFieldNode(questionId: string, fieldId: string, level: number) {
+    this.addNode(questionId + fieldId, fieldId, LIGHT_GREEN, level);
   }
 
-  addNode(id: string, label: string, color: string) {
+  addNode(id: string, label: string, color: string, level: number) {
     this.nodes.push({
       id,
       label,
       color,
+      level,
     });
   }
 
@@ -61,6 +62,19 @@ export class VisGraph {
     this.edges.push({
       ...visEdge,
       color: isConditional ? ORANGE : BLACK,
+    });
+  }
+
+  updateLevel(nodeId: string, level: number) {
+    this.nodes = this.nodes.map((n) => {
+      if (n.id === nodeId) {
+        return {
+          ...n,
+          level,
+        };
+      }
+
+      return n;
     });
   }
 
@@ -87,9 +101,7 @@ export class VisGraph {
   unhighlightSelected() {
     // iterate over each node and replace the matchign one with a bigger size and diff color
     this.nodes = this.nodes.map((n) => ({
-      id: n.id,
-      color: n.color,
-      label: n.label,
+      ...n,
       borderWidth: DEFAULT_BORDER,
     }));
   }

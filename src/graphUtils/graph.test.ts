@@ -8,9 +8,9 @@ import {
   createStringField,
 } from '../mocks/mockFactory';
 import { requirement } from '../mocks/mockWithCondQuestion';
-import { createDepGraph } from './GraphVis.utils';
+import { createGraphs } from './graph';
 
-describe('createDepGraph', () => {
+describe('depGraph', () => {
   describe('question to field', () => {
     const questions = [
       createQuestion('q1', false, [
@@ -24,46 +24,46 @@ describe('createDepGraph', () => {
       ]),
     ];
     const requirement = createRequirement('req', questions, []);
-    const { graph } = createDepGraph(requirement);
+    const { depGraph } = createGraphs(requirement);
 
     it('returns the correct dependencies of q1', () => {
-      expect(graph.dependenciesOf('q1')).toEqual([]);
+      expect(depGraph.dependenciesOf('q1')).toEqual([]);
     });
     it('returns the correct dependencies of q2', () => {
-      expect(graph.dependenciesOf('q2')).toEqual([]);
+      expect(depGraph.dependenciesOf('q2')).toEqual([]);
     });
     it('returns the correct dependents of q1', () => {
-      expect(graph.dependantsOf('q1')).toEqual(['tf1', 'ssf1']);
+      expect(depGraph.dependantsOf('q1')).toEqual(['tf1', 'ssf1']);
 
-      expect(graph.dependenciesOf('tf1')).toEqual(['q1']);
-      expect(graph.dependenciesOf('ssf1')).toEqual(['q1']);
+      expect(depGraph.dependenciesOf('tf1')).toEqual(['q1']);
+      expect(depGraph.dependenciesOf('ssf1')).toEqual(['q1']);
     });
     it('returns the correct dependents of q2', () => {
-      expect(graph.dependantsOf('q2')).toEqual(['af1', 'msf1', 'df1']);
+      expect(depGraph.dependantsOf('q2')).toEqual(['af1', 'msf1', 'df1']);
 
-      expect(graph.dependenciesOf('af1')).toEqual(['q2']);
-      expect(graph.dependenciesOf('msf1')).toEqual(['q2']);
-      expect(graph.dependenciesOf('df1')).toEqual(['q2']);
+      expect(depGraph.dependenciesOf('af1')).toEqual(['q2']);
+      expect(depGraph.dependenciesOf('msf1')).toEqual(['q2']);
+      expect(depGraph.dependenciesOf('df1')).toEqual(['q2']);
     });
   });
 
   describe('conditionally rendered questions to field', () => {
-    const { graph } = createDepGraph(requirement);
+    const { depGraph } = createGraphs(requirement);
 
     it('returns the correct dependencies of q1', () => {
-      expect(graph.dependenciesOf('q1')).toEqual([]);
+      expect(depGraph.dependenciesOf('q1')).toEqual([]);
     });
     it('returns the correct dependencies of q2', () => {
-      expect(graph.dependenciesOf('q2')).toEqual([]);
+      expect(depGraph.dependenciesOf('q2')).toEqual([]);
     });
     it('returns the correct dependencies of q3', () => {
-      expect(graph.dependenciesOf('crq3')).toEqual([
+      expect(depGraph.dependenciesOf('crq3')).toEqual([
         'q1', // q1 here because ssf1 is a dependency of a1
         'ssf1',
       ]);
     });
     it('returns the correct dependencies of q4', () => {
-      expect(graph.dependenciesOf('crq4')).toEqual([
+      expect(depGraph.dependenciesOf('crq4')).toEqual([
         'q1', // q1 here because ssf1 is a dependency of a1
         'ssf1',
         'q2', // q2 here because af1 is a dependency of q2
@@ -85,3 +85,5 @@ describe('createDepGraph', () => {
   // });
   it('throws when there is a circular dependency', () => {});
 });
+
+describe('visGraph', () => {});

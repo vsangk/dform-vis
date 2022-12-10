@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
 import GraphVis from './GraphVis/GraphVis';
 import { requirement } from './mocks/mockWithCondQuestion';
-import { createDepGraph } from './GraphVis/GraphVis.utils';
+import { createGraphs } from './graphUtils/graph';
 
 function App() {
   const [search, setSearch] = useState('');
-  const { visGraph } = useMemo(() => createDepGraph(requirement), []);
+  const { visGraph } = useMemo(() => createGraphs(requirement), []);
 
   return (
     <div>

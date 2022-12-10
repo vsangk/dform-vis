@@ -1,24 +1,24 @@
 import { DepGraph } from 'dependency-graph';
 
 import { Requirement } from '../types';
-import { VisGraph } from '../VisGraph';
+import { VisGraph } from './visGraph';
 
-export function createDepGraph(requirement: Requirement) {
-  const graph = new DepGraph();
+export function createGraphs(requirement: Requirement) {
+  const depGraph = new DepGraph();
   const visGraph = new VisGraph();
 
   for (const question of requirement.questions) {
     // Add every question as a node
-    graph.addNode(question.id);
-    visGraph.addQuestionNode(question.id);
+    depGraph.addNode(question.id);
+    visGraph.addQuestionNode(question.id, 1);
 
     for (const field of question.fields) {
       // Add every field as a node
-      graph.addNode(field.id);
-      visGraph.addFieldNode(question.id, field.id);
+      depGraph.addNode(field.id);
+      visGraph.addFieldNode(question.id, field.id, 1);
 
       // Add question as a dependency of field
-      graph.addDependency(field.id, question.id);
+      depGraph.addDependency(field.id, question.id);
       // Swapping to and from ordering compared to dep graph because this is purely directional
       visGraph.addEdge({ to: question.id + field.id, from: question.id });
     }
@@ -95,7 +95,7 @@ export function createDepGraph(requirement: Requirement) {
           questionConfig.label_options_list.length > 0;
 
         if (isFieldLevelConditional) {
-          graph.addDependency(questionConfig.field_id, dependentFieldId);
+          depGraph.addDependency(questionConfig.field_id, dependentFieldId);
           visGraph.addEdge(
             {
               to: questionConfig.question_id + questionConfig.field_id,
@@ -104,7 +104,7 @@ export function createDepGraph(requirement: Requirement) {
             true
           );
         } else {
-          graph.addDependency(questionConfig.question_id, dependentFieldId);
+          depGraph.addDependency(questionConfig.question_id, dependentFieldId);
           visGraph.addEdge(
             {
               to: questionConfig.question_id,
@@ -117,5 +117,5 @@ export function createDepGraph(requirement: Requirement) {
     }
   }
 
-  return { graph, visGraph };
+  return { depGraph, visGraph };
 }

@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 // @ts-expect-error no types for now
 import Graph from 'react-graph-vis';
 
-import { VisGraph } from '../VisGraph';
+import { VisGraph } from '../graphUtils/visGraph';
 type Props = {
   edges: VisGraph['edges'];
   nodes: VisGraph['nodes'];
