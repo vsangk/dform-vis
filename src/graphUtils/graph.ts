@@ -3,28 +3,60 @@ import { DepGraph } from 'dependency-graph';
 import { Requirement } from '../types';
 import { VisGraph } from './visGraph';
 
+// TODO Overhaul building of this field outside of createGraphs, it should
+// TODO either be encapsulated when adding things to the graph or we only use this
+// TODO as fieldId and labels can extract from it
+const FIELD_ID_SEPARATOR = '__';
+
+export function buildUniqueFieldId(questionId: string, fieldId: string) {
+  return questionId + FIELD_ID_SEPARATOR + fieldId;
+}
+
+export function getIds(uniqueFieldId: string) {
+  const ids = uniqueFieldId.split(FIELD_ID_SEPARATOR);
+
+  if (ids.length !== 2) {
+    throw new Error('invalid uniqueFieldId when getting ids');
+  }
+
+  return {
+    questionId: ids[0],
+    fieldId: ids[1],
+  };
+}
+
 export function createGraphs(requirement: Requirement) {
   const depGraph = new DepGraph();
   const visGraph = new VisGraph();
 
+  /**
+   * Add all the nodes and question->field edges without conditional edges
+   */
   for (const question of requirement.questions) {
     // Add every question as a node
     depGraph.addNode(question.id);
     visGraph.addQuestionNode(question.id, 1);
 
     for (const field of question.fields) {
+      const fieldId = buildUniqueFieldId(question.id, field.id);
+
       // Add every field as a node
-      depGraph.addNode(field.id);
-      visGraph.addFieldNode(question.id, field.id, 1);
+      depGraph.addNode(fieldId);
+      visGraph.addFieldNode(question.id, fieldId, 1);
 
       // Add question as a dependency of field
-      depGraph.addDependency(field.id, question.id);
+      depGraph.addDependency(fieldId, question.id);
       // Swapping to and from ordering compared to dep graph because this is purely directional
-      visGraph.addEdge({ to: question.id + field.id, from: question.id });
+      visGraph.addEdge({
+        to: fieldId,
+        from: question.id,
+      });
     }
   }
 
   /**
+   * Add all the conditional edges
+   *
    * Each question|field in question_configs depends on ALL the operands.
    *
    * To find each field_id the operand is connected to we need to find the field_id
@@ -85,8 +117,15 @@ export function createGraphs(requirement: Requirement) {
     // associate the conditionally rendered question|field with the conditional
     for (const questionConfig of question_configs) {
       for (const dependentId of dependentIds) {
-        const { questionId: dependentQuestionId, fieldId: dependentFieldId } =
-          dependentId;
+        const parentQuestionId = questionConfig.question_id;
+        const parentFieldId = buildUniqueFieldId(
+          questionConfig.question_id,
+          questionConfig.field_id
+        );
+        const dependentFieldId = buildUniqueFieldId(
+          dependentId.questionId,
+          dependentId.fieldId
+        );
 
         const isFieldLevelConditional =
           questionConfig.field_id ||
@@ -95,26 +134,46 @@ export function createGraphs(requirement: Requirement) {
           questionConfig.label_options_list.length > 0;
 
         if (isFieldLevelConditional) {
-          depGraph.addDependency(questionConfig.field_id, dependentFieldId);
+          depGraph.addDependency(parentFieldId, dependentFieldId);
           visGraph.addEdge(
             {
-              to: questionConfig.question_id + questionConfig.field_id,
-              from: dependentQuestionId + dependentFieldId,
+              to: parentFieldId,
+              from: dependentFieldId,
             },
             true
           );
         } else {
-          depGraph.addDependency(questionConfig.question_id, dependentFieldId);
+          depGraph.addDependency(parentQuestionId, dependentFieldId);
           visGraph.addEdge(
             {
-              to: questionConfig.question_id,
-              from: dependentQuestionId + dependentFieldId,
+              to: parentQuestionId,
+              from: dependentFieldId,
             },
             true
           );
         }
       }
     }
+  }
+
+  /**
+   * Add levels (i.e depth) to each visual node for hierarchy
+   *
+   */
+  const depGraphClone = depGraph.clone();
+  let depth = 1;
+
+  while (depGraphClone.size() > 0) {
+    // grab leaves
+    let leaves = depGraphClone.overallOrder(true);
+
+    // for each leaf, remove them from graph and add depth of 1
+    for (const leaf of leaves) {
+      visGraph.updateLevel(leaf, depth);
+      depGraphClone.removeNode(leaf);
+    }
+
+    depth++;
   }
 
   return { depGraph, visGraph };

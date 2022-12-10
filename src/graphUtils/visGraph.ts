@@ -1,3 +1,5 @@
+import { getIds } from './graph';
+
 type VisNode = {
   id: string;
   label: string;
@@ -46,7 +48,9 @@ export class VisGraph {
   }
 
   addFieldNode(questionId: string, fieldId: string, level: number) {
-    this.addNode(questionId + fieldId, fieldId, LIGHT_GREEN, level);
+    const fieldLabel = getIds(fieldId).fieldId;
+
+    this.addNode(fieldId, fieldLabel, LIGHT_GREEN, level);
   }
 
   addNode(id: string, label: string, color: string, level: number) {
